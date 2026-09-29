@@ -1,0 +1,179 @@
+:root {
+  --ink: #ece6d8;
+  --muted: #b7b09f;
+  --paper: #12100d;
+  --panel: #1a1714;
+  --line: rgba(236, 230, 216, 0.12);
+  --accent: #d8a24a;
+  --danger: #e07a4a;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  min-height: 100%;
+  background: radial-gradient(1200px 700px at 80% -10%, #2a2418, var(--paper) 55%);
+  color: var(--ink);
+  font-family: "Space Grotesk", sans-serif;
+}
+
+.grain {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.08;
+  background-image: url("data:image/svgxml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='120' height='120'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.8' numOctaves='2'/%3E%3C/filter%3E%3Crect width='120' height='120' filter='url(%23n)' opacity='.7'/%3E%3C/svg%3E");
+  z-index: 0;
+}
+
+.top,
+.stage {
+  position: relative;
+  z-index: 1;
+}
+
+.top {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  padding: 1.4rem 6vw 0;
+}
+
+.mark {
+  margin: 0;
+  font-family: "Bebas Neue", sans-serif;
+  letter-spacing: 0.16em;
+  font-size: 1.5rem;
+}
+
+.tag {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stage {
+  display: grid;
+  grid-template-columns: minmax(280px, 420px) minmax(280px, 1fr);
+  gap: 3rem;
+  padding: 1.5rem 6vw 4rem;
+  align-items: start;
+}
+
+.panel h1 {
+  font-family: "Playfair Display", serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 600;
+  line-height: 1.15;
+  margin: 0 0 0.75rem;
+}
+
+.lede {
+  color: var(--muted);
+  line-height: 1.5;
+  margin: 0 0 1.6rem;
+}
+
+form {
+  display: grid;
+  gap: 0.95rem;
+}
+
+label {
+  display: grid;
+  gap: 0.4rem;
+  font-size: 0.78rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--muted);
+}
+
+.optional {
+  text-transform: none;
+  letter-spacing: 0;
+}
+
+input,
+select,
+textarea {
+  width: 100%;
+  border: 1px solid var(--line);
+  background: var(--panel);
+  color: var(--ink);
+  font: 500 1rem/1.4 "Space Grotesk", sans-serif;
+  padding: 0.75rem 0.8rem;
+  border-radius: 2px;
+}
+
+textarea {
+  resize: vertical;
+  min-height: 5.5rem;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+  margin-top: 0.4rem;
+}
+
+button {
+  border: 0;
+  cursor: pointer;
+  font: 600 0.92rem/1 "Space Grotesk", sans-serif;
+  padding: 0.85rem 1rem;
+  border-radius: 2px;
+}
+
+#generate {
+  background: var(--accent);
+  color: #16120a;
+}
+
+button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.status {
+  min-height: 1.4rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+}
+
+.status.error {
+  color: var(--danger);
+}
+
+.poster-wrap {
+  display: flex;
+  justify-content: center;
+}
+
+.frame {
+  background: #090807;
+  padding: 14px;
+  box-shadow: 0 30px 80px rgba(0, 0, 0, 0.45);
+  border: 1px solid var(--line);
+}
+
+#poster canvas {
+  display: block;
+  width: min(100%, 420px);
+  height: auto;
+}
+
+@media (max-width: 900px) {
+  .stage {
+    grid-template-columns: 1fr;
+  }
+
+  .top {
+    flex-direction: column;
+    gap: 0.3rem;
+  }
+}

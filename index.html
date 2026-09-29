@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FrameFlux — conceptual movie posters</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=BebasNeue&family=Bungee&family=Cinzel:wght@600;700&family=CormorantGaramond:wght@500;600;700&family=IBMPlexSans:wght@400;500;600&family=Orbitron:wght@500;700&family=Oswald:wght@500;600;700&family=PlayfairDisplay:wght@600;700&family=RussoOne&family=SpaceGrotesk:wght@400;500;600&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="css/styles.css" />
+  </head>
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="top">
+      <p class="mark">FrameFlux</p>
+      <p class="tag">Conceptual posters from a film idea</p>
+    </header>
+
+    <main class="stage">
+      <section class="panel" aria-labelledby="form-heading">
+        <h1 id="form-heading">Make a poster from a pitch</h1>
+        <p class="lede">
+          Enter a title, genre, and optional one-line pitch, then generate a poster.
+        </p>
+
+        <form id="film-form">
+          <label>
+            Film title
+            <input id="title" name="title" maxlength="80" required placeholder="Night of the Glass River" />
+          </label>
+          <label>
+            Genre
+            <input id="genre" name="genre" maxlength="80" required placeholder="Neo-noir, eco-thriller, folk horror…" />
+          </label>
+          <label>
+            One-line pitch <span class="optional">(optional)</span>
+            <textarea
+              id="pitch"
+              name="pitch"
+              maxlength="280"
+              rows="3"
+              placeholder="A cartographer maps a city that only exists after midnight."
+            ></textarea>
+          </label>
+
+          <div class="actions">
+            <button type="submit" id="generate">Generate</button>
+          </div>
+        </form>
+
+        <p id="status" class="status" role="status"></p>
+      </section>
+
+      <section class="poster-wrap" aria-label="Generated poster">
+        <div class="frame">
+          <div id="poster"></div>
+        </div>
+      </section>
+    </main>
+
+  </body>
+</html>
