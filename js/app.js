@@ -23,7 +23,6 @@ const developTeaser = document.querySelector("#develop-teaser");
 const waitRail = document.querySelector("#wait-rail");
 const waitCompanionBlock = document.querySelector(".wait-companion-block");
 const waitCompanion = document.querySelector("#wait-companion");
-const waitCompanionLine = document.querySelector("#wait-companion-line");
 const teaserMetaphor = document.querySelector("#teaser-metaphor");
 const teaserMaterial = document.querySelector("#teaser-material");
 const teaserQuote = document.querySelector("#teaser-quote");
@@ -458,31 +457,8 @@ function showWaitCompanion() {
     window.clearTimeout(companion.leaveTimer);
     companion.leaveTimer = 0;
   }
-  const wasLeaving = waitCompanionBlock?.classList.contains("is-leaving");
   waitCompanionBlock?.classList.remove("is-leaving");
-  const alreadyOpen = !waitRail.hidden && !wasLeaving;
   waitRail.hidden = false;
-  if (alreadyOpen) {
-    return;
-  }
-  companion.lineIndex = -1;
-  companion.announced = true;
-  companion.holdStage = true;
-  const prompt = companionScript().prompt || "Hi, my name is Pulp. Click me!";
-  if (waitCompanionLine) {
-    waitCompanionLine.textContent = prompt;
-  }
-  if (window.speechSynthesis) {
-    window.speechSynthesis.getVoices();
-  }
-  if (companion.greetTimer) {
-    window.clearTimeout(companion.greetTimer);
-  }
-  companion.greetTimer = window.setTimeout(() => {
-    companion.greetTimer = 0;
-    releaseStageLabel();
-  }, window.speechSynthesis ? 4500 : 1800);
-  speakCompanionLine(prompt, { onDone: releaseStageLabel });
 }
 
 function hideWaitCompanion({ immediate } = {}) {
@@ -521,11 +497,12 @@ function hideWaitCompanion({ immediate } = {}) {
 }
 
 function playWaitCompanion() {
+  if (window.FrameFluxPulp?.sayCanned) {
+    window.FrameFluxPulp.sayCanned();
+    return;
+  }
   releaseStageLabel();
   const line = nextCompanionLine();
-  if (waitCompanionLine) {
-    waitCompanionLine.textContent = line;
-  }
   speakCompanionLine(line);
 }
 
@@ -641,7 +618,6 @@ function setPosterBusy(isBusy, { mode, ok, title } = {}) {
     setVariationSpinners(false);
     keyArtOverlay.hidden = true;
     hideDevelopTeaser();
-    hideWaitCompanion();
     posterFrame.classList.remove("is-busy", "is-developing");
     if (exposeRail) {
       exposeRail.hidden = true;
@@ -703,7 +679,6 @@ async function revealKeyArt(image) {
   incomingKeyArt = image;
   keyArtOverlay.hidden = true;
   hideDevelopTeaser();
-  hideWaitCompanion();
   posterFrame.classList.remove("is-developing");
   if (exposeRail) {
     exposeRail.hidden = true;
@@ -1248,6 +1223,26 @@ if (waitCompanion) {
     playWaitCompanion();
   });
 }
+if (window.FrameFluxPulp) {
+  if (window.speechSynthesis) {
+    window.speechSynthesis.getVoices();
+  }
+  window.FrameFluxPulp.init({
+    speak: (text) => speakCompanionLine(text),
+    stopSpeech: stopCompanionSpeech,
+    nextLine: nextCompanionLine,
+    getContext: () => {
+      const film = filmPayload();
+      return {
+        title: film.title,
+        genre: film.genre,
+        pitch: film.pitch,
+        waiting: posterFrame.classList.contains("is-busy"),
+        still: !!keyArt,
+      };
+    },
+  });
+}
 if (archiveClear) {
   archiveClear.addEventListener("click", () => {
     void clearArchive();
@@ -1308,9 +1303,6 @@ function mountCompanionReview() {
     play.type = "button";
     play.textContent = "Play";
     play.addEventListener("click", () => {
-      if (waitCompanionLine) {
-        waitCompanionLine.textContent = line;
-      }
       speakCompanionLine(line);
     });
     const text = document.createElement("span");
