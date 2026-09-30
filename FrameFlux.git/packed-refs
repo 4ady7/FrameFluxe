@@ -1,0 +1,6 @@
+# pack-refs with: peeled fully-peeled sorted 
+a11d50044aecaa570715b0953ec03e86b8a2f5cd refs/heads/frameflux
+15dfdb03827d63fea3d217f41b43ebb93cc87587 refs/heads/local-main
+a11d50044aecaa570715b0953ec03e86b8a2f5cd refs/heads/local-mainMaster
+5a4f4cbb2117e04f2229bcf38d5dee7c52116407 refs/heads/local-master
+5a4f4cbb2117e04f2229bcf38d5dee7c52116407 refs/heads/master
