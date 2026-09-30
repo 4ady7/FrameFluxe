@@ -1,5 +1,5 @@
 window.FrameFluxCompanion = {
-  prompt: "Hi, my name is Pulp. Click me!",
+  prompt: "Hi, my name is Pulp. Talk to me!",
   speech: {
     rate: 0.85,
     pitch: 1.15,
@@ -20,6 +20,6 @@ window.FrameFluxCompanion = {
     "Scratch my ear and it will lock faster... Sorry, that is a lie.",
     "How did you come up with the title?",
     "If you click me again I will pretend the wait is shorter.",
-    "How long have you been writing?"
+    "How long have you been writing?",
   ],
 };

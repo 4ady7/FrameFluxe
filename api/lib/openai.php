@@ -50,6 +50,95 @@ function openaiChatJson(
     return is_array($parsed) ? $parsed : null;
 }
 
+function openaiChatMessages(
+    string $apiKey,
+    string $model,
+    array $messages,
+    float $temperature,
+    int $timeout = 25
+): ?array {
+    $payload = [
+        'model' => $model,
+        'temperature' => $temperature,
+        'max_tokens' => 160,
+        'response_format' => ['type' => 'json_object'],
+        'messages' => $messages,
+    ];
+
+    $ch = curl_init('https://api.openai.com/v1/chat/completions');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'Content-Type: application/json',
+            'Authorization: Bearer ' . $apiKey,
+        ],
+        CURLOPT_POSTFIELDS => json_encode($payload),
+        CURLOPT_TIMEOUT => $timeout,
+    ]);
+
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if (!is_string($response) || $status < 200 || $status >= 300) {
+        return null;
+    }
+
+    $decoded = json_decode($response, true);
+    $content = $decoded['choices'][0]['message']['content'] ?? null;
+    if (!is_string($content)) {
+        return null;
+    }
+
+    $parsed = json_decode($content, true);
+    return is_array($parsed) ? $parsed : null;
+}
+
+function openaiTranscribe(
+    string $apiKey,
+    string $path,
+    string $filename,
+    string $mime,
+    int $timeout = 45
+): ?string {
+    if (!is_file($path)) {
+        return null;
+    }
+    $file = new CURLFile($path, $mime !== '' ? $mime : 'application/octet-stream', $filename);
+    $ch = curl_init('https://api.openai.com/v1/audio/transcriptions');
+    curl_setopt_array($ch, [
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_POST => true,
+        CURLOPT_HTTPHEADER => [
+            'Authorization: Bearer ' . $apiKey,
+        ],
+        CURLOPT_POSTFIELDS => [
+            'model' => 'whisper-1',
+            'file' => $file,
+            'language' => 'en',
+            'response_format' => 'json',
+        ],
+        CURLOPT_TIMEOUT => $timeout,
+    ]);
+
+    $response = curl_exec($ch);
+    $status = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+    curl_close($ch);
+
+    if (!is_string($response) || $status < 200 || $status >= 300) {
+        return null;
+    }
+
+    $decoded = json_decode($response, true);
+    $text = $decoded['text'] ?? null;
+    if (!is_string($text)) {
+        return null;
+    }
+    $text = trim($text);
+    return $text !== '' ? $text : null;
+}
+
 function openaiImagePng(
     string $apiKey,
     string $model,
