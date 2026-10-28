@@ -2,7 +2,7 @@
   const DB_NAME = "frameflux-archive";
   const STORE = "prints";
   const VERSION = 1;
-  const LIMIT = 20;
+  const LIMIT = 50;
 
   function newId() {
     if (global.crypto && typeof global.crypto.randomUUID === "function") {
