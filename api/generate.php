@@ -135,6 +135,7 @@ You are refining an existing FrameFlux Visual DNA. Return JSON only with this ex
 
 Keep the same film identity, visualMetaphor, narrativeAnchor, material, and grammarFamily.
 Strengthen spatial emphasis, lighting, cinematic staging, and quote — not a new concept.
+If the darkroom notes name a specific improvement, make that change first.
 Stay inside this visual grammar:
 {$brief}
 Do not return an identical copy. Variation seed: {$variation}.

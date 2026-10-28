@@ -147,6 +147,72 @@ function conversationNotes() {
     .slice(0, 1200);
 }
 
+function briefNotes(note = "") {
+  return [conversationNotes(), String(note || "").trim()].filter(Boolean).join("\n").slice(0, 1200);
+}
+
+function askImprove() {
+  const dialog = document.querySelector("#improve-dialog");
+  const form = document.querySelector("#improve-form");
+  const note = document.querySelector("#improve-note");
+  const hint = document.querySelector("#improve-hint");
+  if (!dialog || !form || !note || typeof dialog.showModal !== "function") {
+    return Promise.resolve(null);
+  }
+  form.reset();
+  hint.hidden = true;
+  return new Promise((resolve) => {
+    const onNote = () => {
+      const custom = form.querySelector('input[name="improve-choice"][value="custom"]');
+      if (custom) {
+        custom.checked = true;
+      }
+      hint.hidden = true;
+    };
+    const finish = () => {
+      dialog.removeEventListener("close", onClose);
+      form.removeEventListener("submit", onSubmit);
+      note.removeEventListener("input", onNote);
+    };
+    const onClose = () => {
+      finish();
+      if (dialog.returnValue !== "improve") {
+        resolve(null);
+        return;
+      }
+      const picked = form.querySelector('input[name="improve-choice"]:checked');
+      const typed = note.value.trim();
+      if (typed && (!picked || picked.value === "custom")) {
+        resolve(typed);
+        return;
+      }
+      if (picked && picked.value !== "custom") {
+        resolve(picked.value);
+        return;
+      }
+      resolve(null);
+    };
+    const onSubmit = (event) => {
+      const submitter = event.submitter;
+      if (submitter && submitter.value === "cancel") {
+        hint.hidden = true;
+        return;
+      }
+      const picked = form.querySelector('input[name="improve-choice"]:checked');
+      const typed = note.value.trim();
+      const ready = (picked && picked.value !== "custom") || typed !== "";
+      if (!ready) {
+        event.preventDefault();
+        hint.hidden = false;
+      }
+    };
+    note.addEventListener("input", onNote);
+    dialog.addEventListener("close", onClose);
+    form.addEventListener("submit", onSubmit);
+    dialog.showModal();
+  });
+}
+
 function hideMeta() {
   meta.hidden = true;
 }
@@ -954,10 +1020,10 @@ function previousPayload() {
   return visualDna;
 }
 
-async function requestDna({ mode = "generate", previous = null } = {}) {
+async function requestDna({ mode = "generate", previous = null, note = "" } = {}) {
   const payload = {
     ...filmPayload(),
-    conversation: conversationNotes(),
+    conversation: briefNotes(note),
     mode,
     variation: Math.floor(Math.random() * 1_000_000_000),
   };
@@ -977,14 +1043,14 @@ async function requestDna({ mode = "generate", previous = null } = {}) {
   return data;
 }
 
-async function requestImage(dna) {
+async function requestImage(dna, note = "") {
   if (!useGptImage()) {
     return null;
   }
   const response = await fetch("api/image.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dna, useImage: true, conversation: conversationNotes() }),
+    body: JSON.stringify({ dna, useImage: true, conversation: briefNotes(note) }),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -1000,16 +1066,16 @@ async function requestImage(dna) {
   return { image, src: data.image };
 }
 
-async function compose({ mode, previous, interpreting }) {
+async function compose({ mode, previous, interpreting, note = "" }) {
   setError("");
   let ok = false;
   const job = ++composeJob;
   discardIncomingArt();
   setPosterBusy(true, { mode });
   try {
-    const heard = conversationNotes();
+    const heard = briefNotes(note);
     setStatus(heard ? `${interpreting} What you told Pulp is in the brief.` : interpreting);
-    visualDna = await requestDna({ mode, previous });
+    visualDna = await requestDna({ mode, previous, note });
     if (job !== composeJob) {
       return;
     }
@@ -1033,7 +1099,7 @@ async function compose({ mode, previous, interpreting }) {
     if (useGptImage()) {
       setPlateDeveloping(true, { teaser: true, speed: 1 });
       setStatus("Visual DNA resolved. Synthesizing cinematic key art in background...");
-      const still = await requestImage(visualDna);
+      const still = await requestImage(visualDna, note);
       if (job !== composeJob) {
         return;
       }
@@ -1096,11 +1162,16 @@ improveBtn.addEventListener("click", async () => {
   if (!visualDna) {
     return;
   }
+  const note = await askImprove();
+  if (!note) {
+    return;
+  }
   busy(true, "improve");
   try {
     await compose({
       mode: "improve",
       previous: previousPayload(),
+      note,
       interpreting: "Sending the current design back for a stronger pass…",
     });
   } catch (error) {

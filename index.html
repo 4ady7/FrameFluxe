@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@100;300;400;700;900&family=Caveat:wght@400;500;600;700&family=Cinzel:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Jost:wght@200;300;400;500;700&family=Oswald:wght@200;300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Roboto+Slab:wght@100;300;400;700;900&family=Saira+Stencil+One&family=Space+Grotesk:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=pulp-chat-1" />
+    <link rel="stylesheet" href="css/styles.css?v=improve-ask-1" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -245,12 +245,46 @@
       </section>
     </main>
 
+    <dialog id="improve-dialog" aria-labelledby="improve-heading">
+      <form id="improve-form" method="dialog">
+        <h2 id="improve-heading">What do you want to improve?</h2>
+        <fieldset>
+          <legend class="sr-only">Ways to make it better</legend>
+          <label class="improve-option">
+            <input type="radio" name="improve-choice" value="Make the main subject clearer and give it a stronger focal point." />
+            <span>Clearer subject</span>
+          </label>
+          <label class="improve-option">
+            <input type="radio" name="improve-choice" value="Push the mood further, with more atmosphere and emotion." />
+            <span>Stronger mood</span>
+          </label>
+          <label class="improve-option">
+            <input type="radio" name="improve-choice" value="Make the title and quote easier to read." />
+            <span>Easier title and quote</span>
+          </label>
+          <label class="improve-option">
+            <input type="radio" name="improve-choice" value="Strengthen the colour, material, and texture." />
+            <span>Richer colour and texture</span>
+          </label>
+          <label class="improve-option improve-option-note">
+            <input type="radio" name="improve-choice" value="custom" />
+            <input id="improve-note" type="text" maxlength="280" placeholder="type how do you think it could be better" autocomplete="off" />
+          </label>
+        </fieldset>
+        <p id="improve-hint" class="hint" hidden>Choose one, or type your own.</p>
+        <div class="improve-actions">
+          <button type="submit" value="improve">Improve</button>
+          <button type="submit" value="cancel" class="improve-cancel">Cancel</button>
+        </div>
+      </form>
+    </dialog>
+
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
     <script src="js/systems.js?v=nature-5"></script>
     <script src="js/poster.js?v=nature-10"></script>
     <script src="js/companion-lines.js?v=pulp-4"></script>
     <script src="js/pulp-chat.js?v=pulp-notes-1"></script>
     <script src="js/archive.js?v=archive-50"></script>
-    <script src="js/app.js?v=pulp-notes-1"></script>
+    <script src="js/app.js?v=improve-ask-1"></script>
   </body>
 </html>
