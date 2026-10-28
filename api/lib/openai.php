@@ -225,6 +225,11 @@ function cinematicImagePrompt(array $dna): string
     $human = (string) ($semantic['humanElements'] ?? 'none');
     $rawMetaphor = (string) ($semantic['visualMetaphor'] ?? '');
 
+    $notes = trim((string) ($concept['conversation'] ?? $dna['conversation'] ?? ''));
+    $notesBlock = $notes === ''
+        ? ''
+        : "Creative direction the audience gave Pulp. Reflect it in the subject, place, objects, and mood. Do not render these words as text:\n{$notes}\n";
+
     $natureClause = in_array($rawMetaphor, [
         'canine-silhouette',
         'animal-tracks',
@@ -245,7 +250,7 @@ Do not render REF:// labels, reference identifiers, or archive codes.
 Visual metaphor: {$metaphor}. Material presence of {$material} with {$texture} surface.
 Emotional core: {$emotion}. Narrative about {$narrative}. Spatial feel: {$spatial}.
 Mood: {$mood}. Genre feeling: {$genre}.
-Lighting: {$lighting}. Atmosphere: {$atmosphere}.
+{$notesBlock}Lighting: {$lighting}. Atmosphere: {$atmosphere}.
 Colour grade keyed to {$bg}, {$primary}, and a spare accent of {$accent}.
 One dominant subject, restrained detail, physically believable materials, filmic grain.
 The plate must remain textless: no typography, no titles, no captions, no logos, no credits, no UI.

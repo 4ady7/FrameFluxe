@@ -137,6 +137,16 @@ function filmPayload() {
   };
 }
 
+function conversationNotes() {
+  const notes = window.FrameFluxPulp?.userNotes?.() || [];
+  return notes
+    .map((line) => String(line || "").trim())
+    .filter((line) => line && line !== "Voice note")
+    .slice(-8)
+    .join("\n")
+    .slice(0, 1200);
+}
+
 function hideMeta() {
   meta.hidden = true;
 }
@@ -947,6 +957,7 @@ function previousPayload() {
 async function requestDna({ mode = "generate", previous = null } = {}) {
   const payload = {
     ...filmPayload(),
+    conversation: conversationNotes(),
     mode,
     variation: Math.floor(Math.random() * 1_000_000_000),
   };
@@ -973,7 +984,7 @@ async function requestImage(dna) {
   const response = await fetch("api/image.php", {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ dna, useImage: true }),
+    body: JSON.stringify({ dna, useImage: true, conversation: conversationNotes() }),
   });
   const data = await response.json().catch(() => ({}));
   if (!response.ok) {
@@ -996,7 +1007,8 @@ async function compose({ mode, previous, interpreting }) {
   discardIncomingArt();
   setPosterBusy(true, { mode });
   try {
-    setStatus(interpreting);
+    const heard = conversationNotes();
+    setStatus(heard ? `${interpreting} What you told Pulp is in the brief.` : interpreting);
     visualDna = await requestDna({ mode, previous });
     if (job !== composeJob) {
       return;

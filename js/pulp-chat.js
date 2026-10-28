@@ -457,6 +457,14 @@
     }
   }
 
+  function userNotes() {
+    return state.messages
+      .filter((row) => row.role === "you" && typeof row.text === "string")
+      .map((row) => row.text.trim())
+      .filter((text) => text !== "" && text !== "Voice note")
+      .slice(-8);
+  }
+
   window.FrameFluxPulp = {
     init(hooks) {
       state.hooks = { ...state.hooks, ...hooks };
@@ -467,5 +475,6 @@
     },
     sayCanned,
     appendPulp,
+    userNotes,
   };
 })();

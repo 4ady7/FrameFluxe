@@ -430,6 +430,29 @@ function clipText(string $value, int $max, string $fallback = ''): string
     return mb_substr($trimmed, 0, $max);
 }
 
+function clipConversationNotes(string $value): string
+{
+    $trimmed = trim(preg_replace("/[ \t]+/u", ' ', str_replace(["\r\n", "\r"], "\n", $value)) ?? '');
+    $trimmed = trim(preg_replace("/\n{3,}/", "\n\n", $trimmed) ?? '');
+    if ($trimmed === '') {
+        return '';
+    }
+    return mb_substr($trimmed, 0, 1200);
+}
+
+function conversationDirectionBlock(string $notes): string
+{
+    if ($notes === '') {
+        return '';
+    }
+    return <<<TEXT
+
+Optional direction the audience told Pulp. Treat it as story input alongside the pitch. Let it shape emotionalCore, visualMetaphor, cinematic.subject, cinematic.environment, mood, and materials. Do not copy it into concept.pitch. Do not render it as typography or as words in the image.
+Darkroom notes:
+{$notes}
+TEXT;
+}
+
 function quoteWordCount(string $value): int
 {
     $words = preg_split('/\s+/', trim($value), -1, PREG_SPLIT_NO_EMPTY);
@@ -1386,10 +1409,17 @@ function fallbackVisualParams(
     string $pitch,
     int $variation,
     string $mode,
-    ?array $previous
+    ?array $previous,
+    string $notes = ''
 ): array {
-    $seed = abs(crc32($title . '|' . $genre . '|' . $pitch . '|' . $variation . '|' . $mode));
-    $semantic = inferSemanticProfile($title, $genre, $pitch, $seed);
+    $notes = clipConversationNotes($notes);
+    $seedKey = $title . '|' . $genre . '|' . $pitch . '|' . $variation . '|' . $mode;
+    if ($notes !== '') {
+        $seedKey .= '|' . $notes;
+    }
+    $seed = abs(crc32($seedKey));
+    $story = $notes === '' ? $pitch : trim($pitch . ' ' . $notes);
+    $semantic = inferSemanticProfile($title, $genre, $story, $seed);
 
     if ($mode === 'improve' && is_array($previous)) {
         $family = (string) ($previous['grammarFamily'] ?? $semantic['grammarFamily']);

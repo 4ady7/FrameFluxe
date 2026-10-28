@@ -64,6 +64,17 @@ if ($apiKey === '') {
     exit;
 }
 
+$conversation = clipConversationNotes((string) ($data['conversation'] ?? ''));
+if ($conversation === '') {
+    $conversation = clipConversationNotes((string) ($dna['concept']['conversation'] ?? $dna['conversation'] ?? ''));
+}
+if ($conversation !== '') {
+    if (!isset($dna['concept']) || !is_array($dna['concept'])) {
+        $dna['concept'] = [];
+    }
+    $dna['concept']['conversation'] = $conversation;
+}
+
 $prompt = cinematicImagePrompt($dna);
 $b64 = openaiImagePng($apiKey, $model, $prompt);
 

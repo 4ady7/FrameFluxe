@@ -1151,6 +1151,22 @@ expect(str_contains($systemsJs, 'dna.debug && dna.debug.refLabel'), 'REF:// rema
 expect(!preg_match('/function drawRefLabel\([^)]*\) \{\s*if \(!plan\.ref\)/', $systemsJs), 'production drawRefLabel is no longer unguarded');
 
 $prompt = cinematicImagePrompt($dog);
+$notedDna = $dog;
+$notedDna['concept']['conversation'] = 'Put a red paper boat in the harbour at dusk.';
+$notedPrompt = cinematicImagePrompt($notedDna);
+expect(str_contains($notedPrompt, 'red paper boat'), 'image prompt includes what the audience told Pulp');
+expect(str_contains($notedPrompt, 'Do not render these words as text'), 'Pulp notes are direction, not lettering');
+expect(!str_contains($prompt, 'Creative direction the audience gave Pulp'), 'image prompt omits the Pulp block when the audience said nothing');
+$barePlate = fallbackVisualParams('Quiet Room', 'Drama', '', 3, 'generate', null);
+$notedPlate = fallbackVisualParams('Quiet Room', 'Drama', '', 3, 'generate', null, 'A dog waits on a mountain ridge in open country');
+expect(
+    ($barePlate['visualMetaphor'] ?? '') !== ($notedPlate['visualMetaphor'] ?? '')
+        || ($barePlate['cinematic']['subject'] ?? '') !== ($notedPlate['cinematic']['subject'] ?? ''),
+    'local DNA shifts when Pulp was told about a dog on a ridge'
+);
+expect(str_contains(conversationDirectionBlock('Keep the boat red.'), 'Keep the boat red.'), 'DNA brief carries Pulp notes');
+expect(conversationDirectionBlock('') === '', 'empty Pulp notes add no DNA brief');
+expect(clipConversationNotes(str_repeat('a', 1400)) === str_repeat('a', 1200), 'Pulp notes are clipped');
 expect(str_contains(strtolower($prompt), 'do not render ref://'), 'image prompt forbids visible REF:// metadata');
 expect(!preg_match('/\brender REF:\/\//i', str_replace('Do not render REF://', '', $prompt)), 'image prompt does not request REF:// labels');
 expect(!plateLooksLikePosterCopy($prompt) || str_contains($prompt, 'Do not render REF://'), 'cinematic prompt treats REF:// as a prohibition');

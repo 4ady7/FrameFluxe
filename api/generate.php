@@ -61,6 +61,8 @@ if (mb_strlen($pitch) > 280) {
     exit;
 }
 
+$conversation = clipConversationNotes((string) ($data['conversation'] ?? ''));
+
 $previous = whitelistPrevious(is_array($data['previous'] ?? null) ? $data['previous'] : null);
 
 if (($mode === 'improve' || $mode === 'reimagine') && $previous === null) {
@@ -77,17 +79,20 @@ $params = null;
 $source = 'fallback';
 
 if ($apiKey !== '') {
-    $params = requestVisualDna($apiKey, $model, $title, $genre, $pitch, $variation, $mode, $previous);
+    $params = requestVisualDna($apiKey, $model, $title, $genre, $pitch, $variation, $mode, $previous, $conversation);
     if ($params !== null) {
         $source = 'ai';
     }
 }
 
 if ($params === null) {
-    $params = fallbackVisualParams($title, $genre, $pitch, $variation, $mode, $previous);
+    $params = fallbackVisualParams($title, $genre, $pitch, $variation, $mode, $previous, $conversation);
 }
 
 $dna = normalizeParams($params, $title, $genre, $pitch);
+if ($conversation !== '') {
+    $dna['concept']['conversation'] = $conversation;
+}
 $dna['source'] = $source;
 $dna['mode'] = $mode;
 $dna['qualityNotes'] = assessDnaQuality($dna);
@@ -111,12 +116,14 @@ function requestVisualDna(
     string $pitch,
     int $variation,
     string $mode,
-    ?array $previous
+    ?array $previous,
+    string $conversation = ''
 ): ?array {
     $shape = dnaShapePrompt();
     $rules = dnaRulesPrompt();
-    $family = inferGenreFamily($genre, $title . ' ' . $pitch);
+    $family = inferGenreFamily($genre, $title . ' ' . $pitch . ' ' . $conversation);
     $brief = grammarDirectorBrief($family);
+    $direction = conversationDirectionBlock($conversation);
 
     if ($mode === 'improve' && $previous !== null) {
         $prevJson = json_encode($previous, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
@@ -135,6 +142,7 @@ Do not return an identical copy. Variation seed: {$variation}.
 Film title: {$title}
 Genre: {$genre}
 Pitch: {$pitch}
+{$direction}
 
 Previous Visual DNA (whitelisted):
 {$prevJson}
@@ -158,6 +166,7 @@ It must feel like a different creative campaign take, not a seed change. Variati
 Film title: {$title}
 Genre: {$genre}
 Pitch: {$pitch}
+{$direction}
 
 Previous Visual DNA (whitelisted) — do not copy it:
 {$prevJson}
@@ -178,6 +187,7 @@ This is a new design pass (variation {$variation}). Derive emotionalCore, narrat
 Film title: {$title}
 Genre: {$genre}
 Pitch: {$pitch}
+{$direction}
 PROMPT;
         $system = 'You convert film concepts into one nested Visual DNA v1.3 object for a hybrid cinematic / procedural poster system. One film equals one semantic DNA. Never invent enums. Never ask the image model to render typography or REF:// labels. Nature, wildlife, canine, mountain, and botanical subjects are allowed when the story selects them. Return JSON only.';
         $temperature = 1.05;
