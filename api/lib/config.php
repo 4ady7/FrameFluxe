@@ -27,8 +27,8 @@ function framefluxApiKey(array $config): string
 
 function framefluxChatModel(array $config): string
 {
-    $model = trim((string) ($config['openai_model'] ?? 'gpt-5o-mini'));
-    return $model !== '' ? $model : 'gpt-5o-mini';
+    $model = trim((string) ($config['openai_model'] ?? ''));
+    return $model !== '' ? $model : 'gpt-4o-mini';
 }
 
 function framefluxImageModel(array $config): string
