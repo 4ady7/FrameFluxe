@@ -19,4 +19,8 @@ FrameFlux.zip
 
 # Runtime/generated files
 cache/
+tests/_tmp_waits/
+# data/generation-waits.csv keeps the newest waits.
+# data/generation-waits-history.csv is the permanent log. Do not delete it.
 data/
+api/lib/config.php
