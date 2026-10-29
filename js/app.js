@@ -30,14 +30,16 @@ const archiveEl = document.querySelector("#archive");
 const archiveList = document.querySelector("#archive-list");
 const archiveClear = document.querySelector("#archive-clear");
 
-const ROLES = ["signature", "hybrid", "alternative"];
-const SEED_SHIFTS = { signature: 0, hybrid: 101, alternative: 211 };
+const ROLES = ["signature", "hybrid", "alternative", "echo", "offset"];
+const SEED_SHIFTS = { signature: 0, hybrid: 101, alternative: 211, echo: 307, offset: 419 };
 
 const mainPoster = window.FrameFluxPoster.createPoster("poster", { pixelDensity: 2 });
 const thumbs = {
   signature: window.FrameFluxPoster.createPoster("v-signature", { pixelDensity: 1 }),
   hybrid: window.FrameFluxPoster.createPoster("v-hybrid", { pixelDensity: 1 }),
   alternative: window.FrameFluxPoster.createPoster("v-alternative", { pixelDensity: 1 }),
+  echo: window.FrameFluxPoster.createPoster("v-echo", { pixelDensity: 1 }),
+  offset: window.FrameFluxPoster.createPoster("v-offset", { pixelDensity: 1 }),
 };
 
 let visualDna = null;
@@ -822,6 +824,8 @@ function variationLayoutLabels(dna) {
     signature: mode,
     hybrid: keyArt ? "still" : take([layout, place, primary]) || `${mode} mix`,
     alternative: take([place, secondary, layout, primary]) || `${mode} turn`,
+    echo: take([primary, secondary, place]) || `${mode} echo`,
+    offset: take([secondary, primary, layout]) || `${mode} offset`,
   };
 }
 

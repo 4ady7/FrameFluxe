@@ -996,9 +996,9 @@ textarea:focus-visible,
 
 .variations {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 0.7rem;
-  width: min(100%, 420px);
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.55rem;
+  width: min(100%, 760px);
 }
 
 .variations[hidden] {
@@ -1230,6 +1230,10 @@ textarea:focus-visible,
   .poster-stage,
   .poster-column {
     width: 100%;
+  }
+
+  .variations {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
   .poster-stage {

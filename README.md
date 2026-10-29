@@ -8,7 +8,7 @@ human concept
   → AI Art Director (Visual DNA)
   → cinematic key art
   → p5.js interpretation (genre-aware procedural families)
-  → three related directions
+  → five related directions
   → poster
 ```
 

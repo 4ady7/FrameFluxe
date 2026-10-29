@@ -2109,6 +2109,15 @@ function patternPlan(dna, role) {
       { name: primary, weight: 0.18, seedShift: 140 },
     ];
   }
+  if (role === "echo") {
+    return [
+      { name: primary, weight: 0.5, seedShift: 53 },
+      { name: secondary, weight: 0.5, seedShift: 180 },
+    ];
+  }
+  if (role === "offset") {
+    return [{ name: secondary, weight: 0.9, seedShift: 240 }];
+  }
   return [{ name: primary, weight: 0.72, seedShift: 0 }];
 }
 

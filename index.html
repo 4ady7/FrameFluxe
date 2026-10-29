@@ -10,7 +10,7 @@
       href="https://fonts.googleapis.com/css2?family=Archivo:wght@100;300;400;700;900&family=Caveat:wght@400;500;600;700&family=Cinzel:wght@400;500;700;900&family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,400;1,500;1,600&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&family=Jost:wght@200;300;400;500;700&family=Oswald:wght@200;300;400;500;700&family=Playfair+Display:ital,wght@0,400;0,500;0,700;0,900;1,400;1,700&family=Roboto+Slab:wght@100;300;400;700;900&family=Saira+Stencil+One&family=Space+Grotesk:wght@300;400;500;700&display=swap"
       rel="stylesheet"
     />
-    <link rel="stylesheet" href="css/styles.css?v=improve-ask-1" />
+    <link rel="stylesheet" href="css/styles.css?v=seeds-5" />
   </head>
   <body>
     <div class="grain" aria-hidden="true"></div>
@@ -25,7 +25,7 @@
         <p class="lede">
           Enter a title, genre, and optional one-line. What you tell Pulp is optional
           direction for the still. FrameFlux interprets the film, builds Visual DNA,
-          and offers three related directions. Regenerate explores the same idea.
+          and offers five related directions. Regenerate explores the same idea.
           Reimagine asks for a new interpretation.
         </p>
 
@@ -233,6 +233,32 @@
             </div>
             <span class="variation-label">Poster C</span>
           </button>
+          <button type="button" class="variation" data-role="echo" aria-pressed="false">
+            <div class="variation-frame">
+              <div id="v-echo" class="variation-thumb"></div>
+              <div class="variation-spinner" hidden aria-hidden="true">
+                <span class="poster-spinner-mark" aria-hidden="true">
+                  <span class="poster-spinner-ring"></span>
+                  <span class="poster-spinner-orbit"></span>
+                </span>
+                <span class="variation-wait">0s waited</span>
+              </div>
+            </div>
+            <span class="variation-label">Poster D</span>
+          </button>
+          <button type="button" class="variation" data-role="offset" aria-pressed="false">
+            <div class="variation-frame">
+              <div id="v-offset" class="variation-thumb"></div>
+              <div class="variation-spinner" hidden aria-hidden="true">
+                <span class="poster-spinner-mark" aria-hidden="true">
+                  <span class="poster-spinner-ring"></span>
+                  <span class="poster-spinner-orbit"></span>
+                </span>
+                <span class="variation-wait">0s waited</span>
+              </div>
+            </div>
+            <span class="variation-label">Poster E</span>
+          </button>
         </div>
         <section id="archive" class="archive" hidden aria-label="Session archive">
           <div class="archive-head">
@@ -281,10 +307,10 @@
 
     <script src="https://cdn.jsdelivr.net/npm/p5@1.11.3/lib/p5.min.js"></script>
     <script src="js/systems.js?v=nature-5"></script>
-    <script src="js/poster.js?v=nature-10"></script>
+    <script src="js/poster.js?v=seeds-5"></script>
     <script src="js/companion-lines.js?v=pulp-4"></script>
     <script src="js/pulp-chat.js?v=pulp-notes-1"></script>
     <script src="js/archive.js?v=archive-50"></script>
-    <script src="js/app.js?v=improve-ask-1"></script>
+    <script src="js/app.js?v=seeds-5"></script>
   </body>
 </html>
